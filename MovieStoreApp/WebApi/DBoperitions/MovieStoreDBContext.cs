@@ -13,6 +13,7 @@ public class MovieStoreDBContext : DbContext
     public DbSet<Actor> Actors { get; set; }
     public DbSet<Director> Directors { get; set; }
     public DbSet<Genre> Genres { get; set; }
+    public DbSet<Order> Orders { get; set; }
     
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

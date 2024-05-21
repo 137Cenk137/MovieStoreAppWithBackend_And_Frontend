@@ -13,6 +13,8 @@ public class GenreConfigurations : IEntityTypeConfiguration<Genre>
                     .HasForeignKey(a => a.CustomerId);
 
         
+
+        
     }
 }
 

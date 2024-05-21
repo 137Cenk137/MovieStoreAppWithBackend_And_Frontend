@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebApi.Migrations
 {
     [DbContext(typeof(MovieStoreDBContext))]
-    [Migration("20240520120430_mig_1")]
+    [Migration("20240520164156_mig_1")]
     partial class mig_1
     {
         /// <inheritdoc />
@@ -72,6 +72,9 @@ namespace WebApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<float>("Price")
                         .HasColumnType("REAL");
 
@@ -81,6 +84,8 @@ namespace WebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GenreId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Movies");
                 });
@@ -100,19 +105,23 @@ namespace WebApi.Migrations
                     b.ToTable("MovieActor");
                 });
 
-            modelBuilder.Entity("MovieOrder", b =>
+            modelBuilder.Entity("Order", b =>
                 {
-                    b.Property<int>("MovieId")
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("MovieId", "CustomerId");
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("OrderId");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("MovieOrder");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Actor", b =>
@@ -161,7 +170,15 @@ namespace WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Order", "Order")
+                        .WithMany("Movies")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Genre");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("MovieActor", b =>
@@ -183,23 +200,15 @@ namespace WebApi.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("MovieOrder", b =>
+            modelBuilder.Entity("Order", b =>
                 {
                     b.HasOne("Customer", "Customer")
-                        .WithMany("Movies")
+                        .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Movie", "Movie")
-                        .WithMany("Customers")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Customer");
-
-                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("Director", b =>
@@ -217,10 +226,13 @@ namespace WebApi.Migrations
                 {
                     b.Navigation("Actors");
 
-                    b.Navigation("Customers");
-
                     b.Navigation("Director")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Order", b =>
+                {
+                    b.Navigation("Movies");
                 });
 
             modelBuilder.Entity("Actor", b =>
@@ -232,7 +244,7 @@ namespace WebApi.Migrations
                 {
                     b.Navigation("Genres");
 
-                    b.Navigation("Movies");
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

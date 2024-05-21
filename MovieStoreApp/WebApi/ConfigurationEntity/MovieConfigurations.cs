@@ -10,6 +10,12 @@ public class MovieConfigurations : IEntityTypeConfiguration<Movie>
          builder.HasOne( d => d.Director)
                 .WithOne( a => a.Movie)
                 .HasForeignKey<Director>(a => a.MovieId);
+
+        builder.HasOne(x => x.Order)
+                .WithMany( x => x.Movies)
+                .HasForeignKey(x => x.OrderId);
+
+        
          
     }
 }
