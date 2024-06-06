@@ -48,7 +48,7 @@ public class CreateActorCommand
 
            var  actor = new Actor
             {
-                Id = _context.Actors.Count()+1,
+                Id = _context.baseEntities.Count(),
                 Name = Model.Name,
                 SurName = Model.SurName,
                 Movies = new List<MovieActor>()
@@ -66,6 +66,7 @@ public class CreateActorCommand
                    Actor = actor
                 });
             }
+            
         _context.Actors.Add(actor);
 
         _context.SaveChanges();
